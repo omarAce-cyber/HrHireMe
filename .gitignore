@@ -1,0 +1,41 @@
+# ========================
+# Frontend (Node / Next.js)
+# ========================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env*.local
+
+# ========================
+# Backend (.NET)
+# ========================
+backend/src/**/bin/
+backend/src/**/obj/
+backend/**/*.user
+backend/**/.vs/
+backend/**/publish/
+backend/**/.DS_Store
+
+# ========================
+# Docker
+# ========================
+.dockerignore
+
+# ========================
+# General
+# ========================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# ========================
+# IDE
+# ========================
+.idea/
+.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
