@@ -35,13 +35,17 @@ public class GetAnalyticsQueryHandler : IRequestHandler<GetAnalyticsQuery, Analy
             .GroupBy(a => a.Job.Title)
             .Select(g => new JobApplicationStat(g.Key, g.Count()))
             .ToListAsync(cancellationToken);
+        var percentages = results
+            .Where(r => r.MaxScore > 0)
+            .Select(r => r.Score / r.MaxScore * 100)
+            .ToList();
         var scoreDist = new List<ScoreDistribution>
         {
-            new("0-20%", results.Count(r => r.MaxScore > 0 && r.Score/r.MaxScore*100 < 20)),
-            new("20-40%", results.Count(r => r.MaxScore > 0 && r.Score/r.MaxScore*100 >= 20 && r.Score/r.MaxScore*100 < 40)),
-            new("40-60%", results.Count(r => r.MaxScore > 0 && r.Score/r.MaxScore*100 >= 40 && r.Score/r.MaxScore*100 < 60)),
-            new("60-80%", results.Count(r => r.MaxScore > 0 && r.Score/r.MaxScore*100 >= 60 && r.Score/r.MaxScore*100 < 80)),
-            new("80-100%", results.Count(r => r.MaxScore > 0 && r.Score/r.MaxScore*100 >= 80))
+            new("0-20%",   percentages.Count(p => p < 20)),
+            new("20-40%",  percentages.Count(p => p >= 20 && p < 40)),
+            new("40-60%",  percentages.Count(p => p >= 40 && p < 60)),
+            new("60-80%",  percentages.Count(p => p >= 60 && p < 80)),
+            new("80-100%", percentages.Count(p => p >= 80))
         };
         return new AnalyticsDto
         {

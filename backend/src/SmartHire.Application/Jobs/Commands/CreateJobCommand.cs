@@ -35,7 +35,8 @@ public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand, JobDto>
             Department = job.Department, Location = job.Location, SalaryRange = job.SalaryRange,
             Status = job.Status.ToString(), Deadline = job.Deadline,
             PostedByName = user != null ? $"{user.FirstName} {user.LastName}" : "",
-            CreatedAt = job.CreatedAt
+            CreatedAt = job.CreatedAt,
+            ApplicationCount = 0
         };
     }
 }
