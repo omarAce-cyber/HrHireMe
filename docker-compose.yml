@@ -1,23 +1,23 @@
 version: "3.9"
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: smarthire-postgres
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: smarthire-sqlserver
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: smarthire
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "SmartHire@123"
+      MSSQL_PID: "Express"
     ports:
-      - "5432:5432"
+      - "1433:1433"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - sqlserver_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'SmartHire@123' -Q 'SELECT 1' -C || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   backend:
     build:
@@ -30,12 +30,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=smarthire;Username=postgres;Password=postgres"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=SmartHireDB;User Id=sa;Password=SmartHire@123;TrustServerCertificate=True;"
       Jwt__Key: "SmartHire-Super-Secret-JWT-Key-2024-Production-Ready"
       Jwt__Issuer: SmartHireAPI
       Jwt__Audience: SmartHireClient
     depends_on:
-      postgres:
+      sqlserver:
         condition: service_healthy
 
   frontend:
@@ -52,4 +52,4 @@ services:
       - backend
 
 volumes:
-  postgres_data:
+  sqlserver_data:

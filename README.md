@@ -24,12 +24,12 @@
 │                 │  │ Entities, Enums, Business Rules│   │
 │                 │  ├────────────────────────────────┤   │
 │                 │  │ Infrastructure Layer           │   │
-│                 │  │ EF Core + PostgreSQL + JWT     │   │
+│                 │  │ EF Core + SQL Server + JWT     │   │
 │                 │  └────────────────────────────────┘   │
 └─────────────────┴───────────────────────────────────────┘
                           │
                  ┌────────┴────────┐
-                 │   PostgreSQL 16  │
+                 │  SQL Server 2022 │
                  └─────────────────┘
 ```
 
@@ -118,7 +118,7 @@ HrHireMe/
 | MediatR | 12 | CQRS pattern |
 | FluentValidation | 11 | Input validation |
 | Entity Framework Core | 8.0 | ORM |
-| Npgsql EF Provider | 8.0 | PostgreSQL driver |
+| EF Core SQL Server | 8.0 | SQL Server driver |
 | BCrypt.Net-Next | 4.0 | Password hashing |
 | JWT Bearer | 8.0 | Authentication |
 
@@ -148,7 +148,7 @@ Services will start:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8080
 - **Swagger UI**: http://localhost:8080/swagger
-- **PostgreSQL**: localhost:5432
+- **SQL Server**: localhost:1433
 
 ### Demo Accounts (auto-seeded)
 
@@ -164,11 +164,11 @@ Services will start:
 
 ### Backend
 
-Requirements: [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), PostgreSQL 16
+Requirements: [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), SQL Server 2022
 
 ```bash
-# Start PostgreSQL (or use Docker)
-docker run -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16-alpine
+# Start SQL Server (or use Docker)
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=SmartHire@123" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
 
 cd backend
 dotnet restore SmartHire.sln
@@ -193,7 +193,7 @@ npm run dev
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=smarthire;Username=postgres;Password=postgres"
+    "DefaultConnection": "Server=localhost;Database=SmartHireDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
   "Jwt": {
     "Key": "your-secret-key-min-32-chars",
